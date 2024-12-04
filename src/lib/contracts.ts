@@ -21,9 +21,9 @@ export async function executeContractAction(
   contract: Contract,
   account: SessionAccountInterface,
   argentTMA: ArgentTMA,
-  action: string,
-  successMessage: string,
-  errorMessage: string
+  action: string
+  //   successMessage: string,
+  //   errorMessage: string
 ) {
   const call: Call = {
     contractAddress: contract.address,
@@ -35,15 +35,14 @@ export async function executeContractAction(
     const fees = await account?.estimateInvokeFee([call])
     const tx = await contract[action]({
       maxFee: fees?.suggestedMaxFee
-        ? BigInt(fees.suggestedMaxFee) * 2n
+        ? BigInt(fees.suggestedMaxFee) * BigInt(2)
         : undefined,
     })
     await argentTMA.provider.waitForTransaction(tx.transaction_hash)
-    toast.success(successMessage)
+    console.log("Succesfull initialisation")
     return true
   } catch (error) {
     console.error(`Error performing ${action}:`, error)
-    toast.error(errorMessage)
     return false
   }
 }
